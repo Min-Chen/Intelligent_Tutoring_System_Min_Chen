@@ -8,36 +8,35 @@ import android.view.ViewGroup;
 import com.affectiva.android.affdex.sdk.Frame;
 import com.affectiva.android.affdex.sdk.detector.CameraDetector;
 import com.affectiva.android.affdex.sdk.detector.Face;
+import com.example.minchen.moving_average_min_chen.helper.MathUtil;
+import com.example.minchen.moving_average_min_chen.model.Joy;
+import com.example.minchen.moving_average_min_chen.model.JoyContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CameraDetector.CameraEventListener, CameraDetector.ImageListener {
-    SurfaceView cameraDetectorSurfaceView;
-    CameraDetector cameraDetector;
-    int maxProcessingRate = 10 ;
-    private List<Float> joyList = new ArrayList<>();
-    private List<Joy> joysList = new ArrayList<>();
+    private static final int maxProcessingRate = 10 ;
+    private static final int slidingWindowSizeInDataPoints = 15;
+    private static final int slidingWindowSizeInSeconds = 15;
+    private static final float threshold = (float) 60.0;
 
-    private int numDataPointsInList = 15;
-    private final float threshold = (float) 70.0;
+    private JoyContainer joyContainer;
+    private SurfaceView cameraDetectorSurfaceView;
+    private CameraDetector cameraDetector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        cameraDetectorSurfaceView = (SurfaceView)
-                findViewById(R.id.cameraDetectorSurfaceView);
-
-        cameraDetector = new CameraDetector(this ,
-                CameraDetector.CameraType.CAMERA_FRONT, cameraDetectorSurfaceView) ;
+        cameraDetectorSurfaceView = (SurfaceView)findViewById(R.id.cameraDetectorSurfaceView);
+        cameraDetector = new CameraDetector(this, CameraDetector.CameraType.CAMERA_FRONT, cameraDetectorSurfaceView) ;
+        joyContainer = new JoyContainer();
 
         cameraDetector.setMaxProcessRate(maxProcessingRate) ;
-
         cameraDetector.setImageListener(this);
         cameraDetector.setOnCameraEventListener(this);
-
         cameraDetector.setDetectAllEmotions(true);
 
         cameraDetector.start();
@@ -66,57 +65,42 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         Face face = faces.get(0);
         float joy = face.emotions.getJoy();
 
-//        float anger = face.emotions.getAnger();
-//        float surprise = face.emotions.getSurprise();
+        joyContainer.addJoy(joy, timeStamp);
 
+        //Print joy number
         System.out.println("Joy:" + joy);
-//        System.out.println("Anger: " + anger);
-//        System.out.println("Surprise: " + surprise);
-//        printIfReachThreshold(joy);
-        System.out.println("timestamp: " + timeStamp);
 
-        printIfReachThreshold(timeStamp, joy);
+        //User reached the threshold with your last 15 captured emotions.
+        printIfReachThreshold();
+
+        //User reached the threshold during the last 15 seconds
+        printIfReachThreshold(joy);
 
     }
 
-    private void printIfReachThreshold(float timeStamp, float joy) {
-        float currAverage = 0;
-        joysList.add(new Joy(joy, timeStamp));
-        if ((timeStamp - joysList.get(0).getTimeStamp()) >= 15) {
-            currAverage = sum(getJoynessList())/joysList.size(); // get all joys value from the list
-            System.out.println("current average joyness is: " + currAverage);
+    private void printIfReachThreshold(float timeStamp) {
+        if ((timeStamp - joyContainer.getFirstTimeStampInJoyList()) >= slidingWindowSizeInSeconds) {
+
+            float currAverage = MathUtil.ave(joyContainer.getJoyNumList());
+
             if (currAverage >= threshold) {
-                System.out.println("You have reached the threshold.");
+                System.out.println("You have reached the threshold during the last 15 seconds.");
             }
-            joysList.remove(0);
+
+            joyContainer.removeElement(0);
         }
     }
 
-    private void printIfReachThreshold(float joy) {
-        float currAverage = 0;
-        joyList.add(joy);
-        if (joyList.size() == (this.numDataPointsInList+1)) {
-            joyList.remove(0);
-            currAverage = sum(this.joyList)/this.numDataPointsInList;
+    private void printIfReachThreshold() {
+        if (joyContainer.getSize() == slidingWindowSizeInDataPoints) {
+
+            float currAverage = MathUtil.ave(this.joyContainer.getJoyNumList());
+
             if (currAverage >= threshold) {
-                System.out.println("You have reached the threshold.");
+                System.out.println("You have reached the threshold with your last 15 captured emotions.");
             }
-        }
-    }
 
-    private List<Float> getJoynessList() {
-        List<Float> list = new ArrayList<>();
-        for (Joy joy : joysList) {
-            list.add(joy.getJoyness());
+            joyContainer.removeElement(0);
         }
-        return list;
-    }
-
-    private float sum(List<Float> list) {
-        float sum = 0;
-        for (Float i : list) {
-            sum += i;
-        }
-        return sum;
     }
 }
