@@ -1,4 +1,4 @@
-package com.example.minchen.moving_average_min_chen;
+package com.example.minchen.intelligent_tutoring_system_min_chen;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +8,10 @@ import android.view.ViewGroup;
 import com.affectiva.android.affdex.sdk.Frame;
 import com.affectiva.android.affdex.sdk.detector.CameraDetector;
 import com.affectiva.android.affdex.sdk.detector.Face;
-import com.example.minchen.moving_average_min_chen.helper.MathUtil;
-import com.example.minchen.moving_average_min_chen.model.Joy;
-import com.example.minchen.moving_average_min_chen.model.JoyContainer;
+import com.example.minchen.intelligent_tutoring_system_min_chen.helper.MathUtil;
+import com.example.minchen.intelligent_tutoring_system_min_chen.model.JoyContainer;
+import com.example.minchen.intelligent_tutoring_system_min_chen.sentiment_analysis.SentimentAnalysis;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CameraDetector.CameraEventListener, CameraDetector.ImageListener {
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         cameraDetectorSurfaceView = (SurfaceView)findViewById(R.id.cameraDetectorSurfaceView);
         cameraDetector = new CameraDetector(this, CameraDetector.CameraType.CAMERA_FRONT, cameraDetectorSurfaceView) ;
         joyContainer = new JoyContainer();
+        SentimentAnalysis.getSentimentScore("This is a test!");
 
         cameraDetector.setMaxProcessRate(maxProcessingRate) ;
         cameraDetector.setImageListener(this);
@@ -64,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         }
         Face face = faces.get(0);
         float joy = face.emotions.getJoy();
+        float engagement = face.emotions.getEngagement();
+        float valance = face.emotions.getValence();
+
+        float frown = face.expressions.getBrowFurrow();
+        float attention = face.expressions.getAttention();
 
         joyContainer.addJoy(joy, timeStamp);
 

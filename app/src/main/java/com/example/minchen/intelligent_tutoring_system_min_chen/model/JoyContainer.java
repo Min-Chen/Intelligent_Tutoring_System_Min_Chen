@@ -1,4 +1,4 @@
-package com.example.minchen.moving_average_min_chen.model;
+package com.example.minchen.intelligent_tutoring_system_min_chen.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.minchen.moving_average_min_chen">
+    package="com.example.minchen.intelligent_tutoring_system_min_chen">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -17,7 +17,7 @@
         android:allowBackup="false"
         tools:replace="android:allowBackup,android:label">
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.minchen.intelligent_tutoring_system_min_chen.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

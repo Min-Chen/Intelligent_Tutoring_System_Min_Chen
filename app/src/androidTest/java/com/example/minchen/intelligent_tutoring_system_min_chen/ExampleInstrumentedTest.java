@@ -1,14 +1,12 @@
-package com.example.minchen.moving_average_min_chen;
+package com.example.minchen.intelligent_tutoring_system_min_chen;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -22,6 +20,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.minchen.moving_average_min_chen", appContext.getPackageName());
+        assertEquals("com.example.minchen.intelligent_tutoring_system_min_chen", appContext.getPackageName());
     }
 }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Moving_Average_Min_Chen.iml" filepath="$PROJECT_DIR$/Moving_Average_Min_Chen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Intelligent_Tutoring_System_Min_Chen.iml" filepath="$PROJECT_DIR$/Intelligent_Tutoring_System_Min_Chen.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

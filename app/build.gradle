@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.example.minchen.moving_average_min_chen"
+        applicationId "com.example.minchen.intelligent_tutoring_system_min_chen"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
@@ -20,13 +20,14 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.1.1'
     testCompile 'junit:junit:4.12'
-    compile('com.affectiva.android:affdexsdk:3.1.2')
-
+    compile 'com.affectiva.android:affdexsdk:3.1.2'
     androidTestCompile 'org.testng:testng:6.9.6'
+    compile 'edu.stanford.nlp:stanford-corenlp:3.7.0'
+    compile files('libs/stanford-corenlp-models-current.jar')
 }
