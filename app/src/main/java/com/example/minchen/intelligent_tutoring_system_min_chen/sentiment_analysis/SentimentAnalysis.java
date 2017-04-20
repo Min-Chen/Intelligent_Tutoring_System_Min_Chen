@@ -58,6 +58,7 @@ public class SentimentAnalysis {
         Map<String, Integer> sentimentMap = new HashMap<>();
         sentimentMap.put(SentimentMapping.VERY_POSITIVE, 0);
         sentimentMap.put(SentimentMapping.POSITIVE, 0);
+        sentimentMap.put(SentimentMapping.NEUTRAL, 0);
         sentimentMap.put(SentimentMapping.NEGATIVE, 0);
         sentimentMap.put(SentimentMapping.VERY_NEGATIVE, 0);
         return sentimentMap;

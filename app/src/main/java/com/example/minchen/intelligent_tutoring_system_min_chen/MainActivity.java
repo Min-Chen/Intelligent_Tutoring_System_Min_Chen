@@ -11,8 +11,14 @@ import com.affectiva.android.affdex.sdk.detector.Face;
 import com.example.minchen.intelligent_tutoring_system_min_chen.helper.MathUtil;
 import com.example.minchen.intelligent_tutoring_system_min_chen.model.JoyContainer;
 import com.example.minchen.intelligent_tutoring_system_min_chen.sentiment_analysis.SentimentAnalysis;
+//import com.example.minchen.intelligent_tutoring_system_min_chen.sentiment_analysis.SentimentAnalysis;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements CameraDetector.CameraEventListener, CameraDetector.ImageListener {
     private static final int maxProcessingRate = 10 ;
@@ -24,6 +30,13 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
     private SurfaceView cameraDetectorSurfaceView;
     private CameraDetector cameraDetector;
 
+    public static final String tempdirectory = System.getProperty("java.io.tmpdir");
+    public static final String pathSep = System.getProperty("path.separator");
+    public static final String CLASSPATH = System.getProperty("java.class.path");
+    // let the ClassLoader be only one -- global variable.
+    public static ClassLoader parentLoader;
+    public static ClassLoader loader;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         cameraDetectorSurfaceView = (SurfaceView)findViewById(R.id.cameraDetectorSurfaceView);
         cameraDetector = new CameraDetector(this, CameraDetector.CameraType.CAMERA_FRONT, cameraDetectorSurfaceView) ;
         joyContainer = new JoyContainer();
-        SentimentAnalysis.getSentimentScore("This is a test!");
 
         cameraDetector.setMaxProcessRate(maxProcessingRate) ;
         cameraDetector.setImageListener(this);
@@ -108,4 +120,37 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
             joyContainer.removeElement(0);
         }
     }
+
+    public static void main(String[] args) throws IOException {
+        exec(new Scanner(System.in));
+    }
+
+    public static void exec(Scanner sc) throws IOException {
+        parentLoader = ClassLoader.getSystemClassLoader();
+        URL tmpURL = new File(tempdirectory).toURI().toURL();
+        loader = new URLClassLoader(new URL[] { tmpURL }, parentLoader);
+
+        while (true) {
+            System.out.print("> ");
+            while(sc.hasNextLine()) {
+                String input = sc.nextLine();
+                input = input.trim();
+                if (input.length() == 0) {
+                    continue;
+                }
+                if (input.equals("quit")) {
+                    break;
+                }
+                else {
+                    SentimentAnalysis.getSentimentScore(input);
+                    continue;
+                }
+            }
+        }
+    }
+
+//    public static void main(String[] args) {
+//        SentimentAnalysis.getSentimentScore("This is a test!");
+//
+//    }
 }
