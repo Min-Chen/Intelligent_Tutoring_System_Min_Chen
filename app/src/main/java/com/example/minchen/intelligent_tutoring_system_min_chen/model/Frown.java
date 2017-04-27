@@ -1,11 +1,11 @@
 package com.example.minchen.intelligent_tutoring_system_min_chen.model;
 
-public class Joy {
-    float joyNum;
+public class Frown {
+    float frownNum;
     float timeStamp;
 
-    public Joy(float joyNum, float timeStamp) {
-        this.joyNum = joyNum;
+    public Frown(float frownNum, float timeStamp) {
+        this.frownNum = frownNum;
         this.timeStamp = timeStamp;
     }
 
@@ -17,12 +17,12 @@ public class Joy {
         this.timeStamp = timeStamp;
     }
 
-    public float getJoyNum() {
-        return joyNum;
+    public float getFrownNum() {
+        return frownNum;
     }
 
-    public void setJoyNum(float joyNum) {
-        this.joyNum = joyNum;
+    public void setFrownNum(float frownNum) {
+        this.frownNum = frownNum;
     }
 
 }

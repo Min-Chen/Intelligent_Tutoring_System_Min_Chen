@@ -8,17 +8,13 @@ import android.view.ViewGroup;
 import com.affectiva.android.affdex.sdk.Frame;
 import com.affectiva.android.affdex.sdk.detector.CameraDetector;
 import com.affectiva.android.affdex.sdk.detector.Face;
+import com.example.minchen.intelligent_tutoring_system_min_chen.helper.HTTPRequestHelper;
 import com.example.minchen.intelligent_tutoring_system_min_chen.helper.MathUtil;
-import com.example.minchen.intelligent_tutoring_system_min_chen.model.JoyContainer;
-import com.example.minchen.intelligent_tutoring_system_min_chen.sentiment_analysis.SentimentAnalysis;
-//import com.example.minchen.intelligent_tutoring_system_min_chen.sentiment_analysis.SentimentAnalysis;
+import com.example.minchen.intelligent_tutoring_system_min_chen.model.FrownContainer;
 
-import java.io.File;
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.List;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements CameraDetector.CameraEventListener, CameraDetector.ImageListener {
     private static final int maxProcessingRate = 10 ;
@@ -26,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
     private static final int slidingWindowSizeInSeconds = 15;
     private static final float threshold = (float) 60.0;
 
-    private JoyContainer joyContainer;
+    private FrownContainer frownContainer;
     private SurfaceView cameraDetectorSurfaceView;
     private CameraDetector cameraDetector;
 
@@ -44,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         setContentView(R.layout.activity_main);
         cameraDetectorSurfaceView = (SurfaceView)findViewById(R.id.cameraDetectorSurfaceView);
         cameraDetector = new CameraDetector(this, CameraDetector.CameraType.CAMERA_FRONT, cameraDetectorSurfaceView) ;
-        joyContainer = new JoyContainer();
+        frownContainer = new FrownContainer();
+        heartbeatToPushFacialExpression();
 
         cameraDetector.setMaxProcessRate(maxProcessingRate) ;
         cameraDetector.setImageListener(this);
@@ -82,75 +79,75 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
         float frown = face.expressions.getBrowFurrow();
         float attention = face.expressions.getAttention();
 
-        joyContainer.addJoy(joy, timeStamp);
+        frownContainer.addFrown(frown, timeStamp);
 
         //Print joy number
-        System.out.println("Joy:" + joy);
+        System.out.println("Frown:" + frown);
 
         //User reached the threshold with your last 15 captured emotions.
         printIfReachThreshold();
 
         //User reached the threshold during the last 15 seconds
-        printIfReachThreshold(joy);
+        printIfReachThreshold(frown);
 
     }
 
     private void printIfReachThreshold(float timeStamp) {
-        if ((timeStamp - joyContainer.getFirstTimeStampInJoyList()) >= slidingWindowSizeInSeconds) {
+        if ((timeStamp - frownContainer.getFirstTimeStampInFrownList()) >= slidingWindowSizeInSeconds) {
 
-            float currAverage = MathUtil.ave(joyContainer.getJoyNumList());
+            float currAverage = MathUtil.ave(frownContainer.getFrownNumList());
 
             if (currAverage >= threshold) {
                 System.out.println("You have reached the threshold during the last 15 seconds.");
             }
 
-            joyContainer.removeElement(0);
+            frownContainer.removeElement(0);
         }
     }
 
-    private void printIfReachThreshold() {
-        if (joyContainer.getSize() == slidingWindowSizeInDataPoints) {
+    private boolean printIfReachThreshold() {
+        boolean isReachThreshold = false;
+        if (frownContainer.getSize() == slidingWindowSizeInDataPoints) {
 
-            float currAverage = MathUtil.ave(this.joyContainer.getJoyNumList());
+            float currAverage = MathUtil.ave(this.frownContainer.getFrownNumList());
 
             if (currAverage >= threshold) {
+                isReachThreshold = true;
                 System.out.println("You have reached the threshold with your last 15 captured emotions.");
             }
-
-            joyContainer.removeElement(0);
+            frownContainer.removeElement(0);
         }
+        return isReachThreshold;
     }
 
-    public static void main(String[] args) throws IOException {
-        exec(new Scanner(System.in));
-    }
-
-    public static void exec(Scanner sc) throws IOException {
-        parentLoader = ClassLoader.getSystemClassLoader();
-        URL tmpURL = new File(tempdirectory).toURI().toURL();
-        loader = new URLClassLoader(new URL[] { tmpURL }, parentLoader);
-
-        while (true) {
-            System.out.print("> ");
-            while(sc.hasNextLine()) {
-                String input = sc.nextLine();
-                input = input.trim();
-                if (input.length() == 0) {
-                    continue;
-                }
-                if (input.equals("quit")) {
-                    break;
-                }
-                else {
-                    SentimentAnalysis.getSentimentScore(input);
-                    continue;
+    public void heartbeatToPushFacialExpression() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    String urlString = new StringBuffer()
+                            .append("http://")
+//                            .append("192.168.1.255").append(":")
+                            .append("10.2.23.39").append(":")
+                            .append(3050)
+                            .append("/api/heartbeat")
+                            .append("?frown=")
+                            .append(printIfReachThreshold())
+                            .toString();
+                    System.out.println("url string to send to sentiment analysis server is: " + urlString);
+                    String result = null;
+                    try {
+                        URL url = new URL(urlString);
+                        result = HTTPRequestHelper.getHTML(url);
+                        System.out.println("blah");
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
+        }.start();
     }
-
-//    public static void main(String[] args) {
-//        SentimentAnalysis.getSentimentScore("This is a test!");
-//
-//    }
 }
