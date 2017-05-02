@@ -72,16 +72,17 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
             return; // no face found
         }
         Face face = faces.get(0);
+        float frown = face.expressions.getBrowFurrow();
+
+        float attention = face.expressions.getAttention();
         float joy = face.emotions.getJoy();
         float engagement = face.emotions.getEngagement();
         float valance = face.emotions.getValence();
 
-        float frown = face.expressions.getBrowFurrow();
-        float attention = face.expressions.getAttention();
-
+        //Save frown facial expression to data structure
         frownContainer.addFrown(frown, timeStamp);
 
-        //Print joy number
+        //Print frown number
         System.out.println("Frown:" + frown);
 
         //User reached the threshold with your last 15 captured emotions.
@@ -127,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
                 while (true) {
                     String urlString = new StringBuffer()
                             .append("http://")
-//                            .append("192.168.1.255").append(":")
-                            .append("10.2.23.39").append(":")
+//                            .append("10.2.23.39").append(":")
+                            .append("10.10.34.249").append(":")
                             .append(3050)
                             .append("/api/heartbeat")
                             .append("?frown=")
@@ -139,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements CameraDetector.Ca
                     try {
                         URL url = new URL(urlString);
                         result = HTTPRequestHelper.getHTML(url);
-                        System.out.println("blah");
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
