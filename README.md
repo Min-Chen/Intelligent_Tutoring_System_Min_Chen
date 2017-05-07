@@ -3,7 +3,11 @@
 # How to install
 1. Install HCI_Sentiment_Analysis_Min_Chen by following the readme file at this link: https://github.com/Min-Chen/HCI_Sentiment_Analysis_Min_Chen/tree/master.
 2. Download Android Studio at https://developer.android.com/studio/index.html and install it locally.
-3. Download this facial expression detection module by running the command ```git clone https://github.com/Min-Chen/Intelligent_Tutoring_System_Min_Chen.git```.
+3. Download this facial expression detection module by running the command:
+   - ```git clone https://github.com/Min-Chen/Intelligent_Tutoring_System_Min_Chen.git```.
+4. Install facial expression apk file. 
+   - The apk file is under app directory: https://github.com/Min-Chen/Intelligent_Tutoring_System_Min_Chen/tree/master/app. 
+   - The file name of the apk file is ```app-debug.apk```.
 
 
 # Analyze Facial Expressions
