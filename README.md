@@ -1,5 +1,11 @@
 # Intelligent Tutoring System
 
+# How to install
+1. Install HCI_Sentiment_Analysis_Min_Chen by following the readme file at this link: https://github.com/Min-Chen/HCI_Sentiment_Analysis_Min_Chen/tree/master.
+2. Download Android Studio at https://developer.android.com/studio/index.html and install it locally.
+3. Download this facial expression detection module by running the command ```git clone https://github.com/Min-Chen/Intelligent_Tutoring_System_Min_Chen.git```.
+
+
 # Analyze Facial Expressions
 - Use `Affectiva` to track user's facial expressions in real time.
 - `frown` presents a tendency of negative emotion; `smile` presents a tendency of positive emotion.
